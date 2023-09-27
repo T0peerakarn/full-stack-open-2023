@@ -33,9 +33,15 @@ const App = () => {
             setError(false)
             setMessage(`Replaced ${person.name}`)
             setTimeout(() => setMessage(null), 3000)
+            setNewName('')
+            setNewNumber('')
           })
-        setNewName('')
-        setNewNumber('')
+          .catch(error => {
+            setError(true)
+            setMessage("Invalid name or number")
+            setTimeout(() => setMessage(null), 3000)
+            return
+          })
       }
 
       return
@@ -48,10 +54,15 @@ const App = () => {
         setError(false)
         setMessage(`Added ${newName}`)
         setTimeout(() => setMessage(null), 3000);
+        setNewName('')
+        setNewNumber('')
       })
-    
-    setNewName('')
-    setNewNumber('')
+      .catch(error => {
+        setError(true)
+        setMessage("Invalid name or number")
+        setTimeout(() => setMessage(null), 3000)
+        return
+      })
   }
 
   const removePerson = id => {
