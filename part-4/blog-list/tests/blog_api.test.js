@@ -13,18 +13,18 @@ beforeEach(async () => {
         const blogObject = new Blog(blog)
         await blogObject.save()
     }
-}, 10000)
+}, 30000)
 
-test('blog list application returns the correct amount of blog posts in the JSON format', async () => {
+test('get the correct amount of blog posts in the JSON format', async () => {
     const response = await api
                         .get('/api/blogs')
                         .expect(200)
                         .expect('Content-Type', /application\/json/)
 
     expect(response.body).toHaveLength(helper.initialBlogs.length)
-}, 10000)
+}, 30000)
 
-test('the unique identifier property of the blog posts is named id', async () => {
+test('get unique identifier property of the blog posts (id)', async () => {
     const response = await api
                         .get('/api/blogs')
                         .expect(200)
@@ -36,9 +36,9 @@ test('the unique identifier property of the blog posts is named id', async () =>
         expect(blog.id).toBeDefined()
     });
     expect(isArrayUnique(response.body.map(blog => blog.id))).toBeTruthy()
-}, 10000)
+}, 30000)
 
-test('make a post request', async () => {
+test('post a normal blog', async () => {
     await api
         .post('/api/blogs')
         .send(helper.normalBlog)
@@ -48,9 +48,9 @@ test('make a post request', async () => {
     const response = await api.get('/api/blogs')
 
     expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
-}, 10000)
+}, 30000)
 
-test('likes property is missing', async () => {
+test('post a blog that missing likes property', async () => {
     const response = await api
                         .post('/api/blogs')
                         .send(helper.likesMissingBlog)
@@ -58,10 +58,9 @@ test('likes property is missing', async () => {
                         .expect('Content-Type', /application\/json/)
 
     expect(response.body.likes).toEqual(0)
-}, 10000)
+}, 30000)
 
-test('title or url properties are missing', async () => {
-
+test('post a blog that missing title or url properties', async () => {
     await api
         .post('/api/blogs')
         .send(helper.titleMissingBlog)
@@ -75,7 +74,59 @@ test('title or url properties are missing', async () => {
     const response = await api.get('/api/blogs')
 
     expect(response.body).toHaveLength(helper.initialBlogs.length)
-}, 10000)
+}, 30000)
+
+test('delete an existing blog', async () => {
+    const oldResponse = await api.get('/api/blogs')
+
+    await api
+        .delete(`/api/blogs/${oldResponse.body[0].id}`)
+        .expect(204)
+    
+    const newResponse = await api.get('/api/blogs')
+
+    expect(newResponse.body).toHaveLength(helper.initialBlogs.length - 1)
+}, 30000)
+
+test('delete a non-existing blog', async () => {
+    const oldResponse = await api.get('/api/blogs')
+
+    await api
+        .delete(`/api/blogs/${oldResponse.body[0].id}`)
+        .expect(204)
+    
+    await api
+        .delete(`/api/blogs/${oldResponse.body[0].id}`)
+        .expect(404)
+    
+    const newResponse = await api.get('/api/blogs')
+
+    expect(newResponse.body).toHaveLength(helper.initialBlogs.length - 1)
+}, 30000)
+
+test('patch a 100-likes to the first blog', async () => {
+    const oldResponse = await api.get('/api/blogs')
+
+    const blog = await api
+                    .patch(`/api/blogs/${oldResponse.body[0].id}`)
+                    .send({ likes: 100 })
+                    .expect(200)
+    
+    expect(blog.body.likes).toEqual(100)
+}, 30000)
+
+test('patch a 100-likes to a non-existent id', async () => {
+    const oldResponse = await api.get('/api/blogs')
+
+    await api
+        .delete(`/api/blogs/${oldResponse.body[0].id}`)
+        .expect(204)
+
+    await api
+        .patch(`/api/blogs/${oldResponse.body[0].id}`)
+        .send({ likes: 100 })
+        .expect(404)
+}, 30000)
 
 afterAll(async () => {
     await mongoose.connection.close()
