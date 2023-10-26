@@ -1,5 +1,4 @@
 const blogsRouter = require('express').Router()
-const blog = require('../models/blog')
 const Blog = require('../models/blog')
 
 blogsRouter.get('/', (request, response) => {
@@ -10,10 +9,14 @@ blogsRouter.get('/', (request, response) => {
 })
   
 blogsRouter.post('/', (request, response) => {
-    
-    const blog = new Blog(request.body)
+    const title = request.body.title
+    const url = request.body.url
 
-    blog
+    if (!title || !url) return response.status(400).end()
+    
+    const newBlog = new Blog(request.body)
+
+    newBlog
         .save()
         .then(result => response.status(201).json(result))
 })
