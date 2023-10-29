@@ -56,10 +56,45 @@ const urlMissingBlog = {
     likes: 2
 }
 
+const initialUsers = [
+    {
+        username: "alice01",
+        password: "1234",
+        name: "Alice"
+    },
+    {
+        username: "bob02",
+        password: "1234",
+        name: "Bob"
+    }
+]
+
+const normalUser = {
+    username: "catherine03",
+    password: "1234",
+    name: "Catherine"
+}
+
+const shortUsernameUser = {
+    username: "03",
+    password: "1234",
+    name: "Catherine"
+}
+
+const shortPasswordUser = {
+    username: "catherine03",
+    password: "12",
+    name: "Catherine"
+}
+
 module.exports = {
     initialBlogs,
     normalBlog,
     likesMissingBlog,
     titleMissingBlog,
-    urlMissingBlog
+    urlMissingBlog,
+    initialUsers,
+    normalUser,
+    shortUsernameUser,
+    shortPasswordUser
 }
