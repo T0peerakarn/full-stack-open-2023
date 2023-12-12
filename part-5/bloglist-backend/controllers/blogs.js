@@ -43,8 +43,11 @@ router.delete('/:id', async (request, response) => {
 })
 
 router.put('/:id', async (request, response) => {
+    const user = request.user
+    if (!user) return response.status(401).json({ error: 'operation not permitted' })
+
     const { title, url, author, likes } = request.body
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, { title, url, author, likes }, { new: true })
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, { title, url, author, likes, user }, { new: true })
 
     response.json(updatedBlog)
 })
