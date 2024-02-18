@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { updateFilter } from '../reducers/filterReducer'
+import { setFilter } from '../reducers/filterReducer'
 
 const Filter = () => {
 
-  const [filter, setFilter] = useState('')
+  const [typedFilter, setTypedFilter] = useState('')
   const dispatch = useDispatch()
 
   const changeHandler = (e) => {
-    setFilter(e.target.value)
-    dispatch(updateFilter(e.target.value))
+    setTypedFilter(e.target.value)
+    dispatch(setFilter({ filter: e.target.value }))
   }
 
   const style = {
@@ -19,7 +19,7 @@ const Filter = () => {
   return (
     <div style={style}>
       filter
-      <input value={filter} onChange={changeHandler}/>
+      <input value={typedFilter} onChange={changeHandler}/>
     </div>
   )
 }
