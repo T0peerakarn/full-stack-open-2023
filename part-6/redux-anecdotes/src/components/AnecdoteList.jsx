@@ -7,7 +7,7 @@ const AnecdoteList = () => {
     ? state.anecdotes
     : state.anecdotes.filter(a => a.content.toLowerCase().includes(state.filter.toLowerCase()))
   })
-  
+
   return [...anecdotes]
     .sort((a, b) => a.votes - b.votes)
     .map(a => <Anecdote key={a.id} anecdote={a}/>)
